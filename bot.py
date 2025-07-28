@@ -1,11 +1,14 @@
+from flask import Flask, request
 import requests
-import time
 import telegram
+
+app = Flask(__name__)
 
 TELEGRAM_TOKEN = '8488443513:AAGlagWO9mfRUIK_4-hHMTIKTASeILtq9MM'
 CHAT_ID = 1050138562
-
 bot = telegram.Bot(token=TELEGRAM_TOKEN)
+
+last_positions = None
 
 def get_positions():
     url = "https://api.hyperliquid.xyz/positions"
@@ -20,12 +23,20 @@ def get_positions():
         print(f"Exception: {e}")
         return None
 
-last_positions = None
+@app.route('/')
+def home():
+    return "Bot is running!"
 
-while True:
+@app.route('/check_positions')
+def check_positions():
+    global last_positions
     positions = get_positions()
     if positions and positions != last_positions:
         message = "تغییر در پوزیشن‌ها دیده شد!"
         bot.send_message(chat_id=CHAT_ID, text=message)
         last_positions = positions
-    time.sleep(30)
+        return "Message sent!"
+    return "No change detected."
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
