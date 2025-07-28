@@ -28,4 +28,4 @@ while True:
         message = "تغییر در پوزیشن‌ها دیده شد!"
         bot.send_message(chat_id=CHAT_ID, text=message)
         last_positions = positions
-    time.sleep(3)
+    time.sleep(30)
